@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { auth } from ".././firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import './login.css';
@@ -42,7 +43,7 @@ const Login = () => {
         <button type="submit">Login</button>
       </form>
 
-      <div><p>Don't have an account? <a href="#">Sign Up</a></p></div>
+      <div><p>Don't have an account? <Link to="/signup">Sign Up</Link></p></div>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
       {success && <p style={{ color: 'green' }}>{success}</p>}
