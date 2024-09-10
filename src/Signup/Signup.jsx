@@ -22,9 +22,6 @@ const Signup = () => {
         email: user.email,
         createdAt: new Date(),
       });
-      console.log("User created")
-
-
     } catch (error) {
       setError("Error creating user: " + error.message);
       console.log(error);
