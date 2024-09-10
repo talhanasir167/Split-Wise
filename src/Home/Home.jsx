@@ -3,14 +3,12 @@ import { auth, db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import './Home.css';
 
-// Reusable Input Component
 const InputField = ({ type, placeholder }) => (
   <div className="input-group">
     <input type={type} placeholder={placeholder} />
   </div>
 );
 
-// Reusable Select Component
 const SelectField = ({ label, options, value, onChange }) => (
   <div className="select-group">
     <label>{label}</label>
@@ -29,6 +27,7 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState("");
+  const [payerOption, setPayerOption] = useState("")
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -52,6 +51,13 @@ function Home() {
     setSelectedUser(e.target.value);
   };
 
+  const handlePaymentOptionsChange = (e) => {
+    setPayerOption(e.target.value);
+    if (e.target.value === "1") {
+      setSelectedUser(user.uid);
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
       if (currentUser) {
@@ -69,36 +75,41 @@ function Home() {
     return <div>Loading...</div>;
   }
 
+  const filteredUsers = payerOption === "2"
+    ? users.filter(u => u.email !== user.email)
+    : users;
+
   const paymentOptions = [
     { value: "1", label: "You Paid all Amount" },
-    { value: "2", label: "Other Paid All Amount" }
+    { value: "2", label: "Other Paid All Amount" },
   ];
 
-  const userOptions = users.length > 0 
-    ? users.map(user => ({ value: user.id, label: user.email }))
+  const userOptions = filteredUsers.length > 0 
+    ? filteredUsers.map(user => ({ value: user.id, label: user.name }))
     : [{ value: "", label: "No users available" }];
 
   return (
     <div className="container">
       {user ? (
         <div>
-          <h2>Welcome In Our Application, Mr {user.email}</h2>
+          <h2>Welcome, Mr {user.email}</h2>
 
-          <h2>Add Expense</h2>
+          <h3>Add Expense</h3>
 
-          <InputField type="text" placeholder="Enter Expense Name" />
-          <InputField type="number" placeholder="Enter Amount" />
+          <InputField type="text" placeholder="Expense Name" />
+          <InputField type="number" placeholder="Total Amount" />
+          <InputField type="number" placeholder="Paid Amount" />
           <InputField type="date" placeholder="Enter Date" />
 
           <SelectField 
             label="Payment Method:" 
             options={paymentOptions} 
-            value="" 
-            onChange={() => {}} 
+            value={payerOption} 
+            onChange={handlePaymentOptionsChange} 
           />
           
           <SelectField 
-            label="Select User:" 
+            label="Paid By:" 
             options={userOptions} 
             value={selectedUser} 
             onChange={handleUserChange} 
