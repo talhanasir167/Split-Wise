@@ -15,7 +15,7 @@ function App() {
 
   return (
     <>
-     <h1>Splitwise Clone</h1>
+      <h1>Splitwise Clone</h1>
       <RouterProvider router={router} />
     </>
   )
